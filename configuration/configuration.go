@@ -49,7 +49,7 @@ func ParseConfiguration(args []string) (*SNMPNotifierConfiguration, log.Logger, 
 		snmpTrapOidLabel            = application.Flag("snmp.trap-oid-label", "Label where to find the trap OID.").Default("oid").String()
 		snmpDefaultOid              = application.Flag("snmp.trap-default-oid", "Trap OID to send if none is found in the alert labels.").Default("1.3.6.1.4.1.98789.0.1").String()
 		snmpTrapDescriptionTemplate = application.Flag("snmp.trap-description-template", "SNMP description template.").Default("description-template.tpl").ExistingFile()
-		snmpExtraFieldTemplate      = application.Flag("snmp.extra-field-template", "SNMP extra field templates, eg. --snmp.extra-field-templates=4=new-field.template.tpl to add a 4th field to the trap, with the given template file. You may add several fields using that flag several times.").PlaceHolder("4=extra-field-template.tpl").StringMap()
+		snmpExtraFieldTemplate      = application.Flag("snmp.extra-field-template", "SNMP extra field templates, eg. --snmp.extra-field-templates=11=new-field.template.tpl to add a 11th field to the trap, with the given template file. You may add several fields using that flag several times.").PlaceHolder("11=extra-field-template.tpl").StringMap()
 		snmpTimeout                 = application.Flag("snmp.timeout", "SNMP timeout duration").Default("5s").Duration()
 
 		// V2c only
@@ -89,8 +89,8 @@ func ParseConfiguration(args []string) (*SNMPNotifierConfiguration, log.Logger, 
 	if snmpExtraFieldTemplate != nil {
 		for k, v := range *snmpExtraFieldTemplate {
 			i, err := strconv.Atoi(k)
-			if err != nil || i < 4 {
-				return nil, logger, fmt.Errorf("Invalid field ID: %s. Field ID must be a number superior to 3", k)
+			if err != nil || i < 11 {
+				return nil, logger, fmt.Errorf("Invalid field ID: %s. Field ID must be a number superior to 11 ", k)
 			}
 			currentTemplate, err := template.New(filepath.Base(v)).Funcs(template.FuncMap{
 				"groupAlertsByLabel": commons.GroupAlertsByLabel,
@@ -104,7 +104,7 @@ func ParseConfiguration(args []string) (*SNMPNotifierConfiguration, log.Logger, 
 	}
 
 	if !commons.IsOID(*snmpDefaultOid) {
-		return nil, logger, fmt.Errorf("Invalid default OID provided: %s", *snmpDefaultOid)
+		return nil, logger, fmt.Errorf("Invalid default OID provided: %s ", *snmpDefaultOid)
 	}
 
 	severities := strings.Split(*alertSeverities, ",")
@@ -144,7 +144,7 @@ func ParseConfiguration(args []string) (*SNMPNotifierConfiguration, log.Logger, 
 	}
 
 	if !*snmpAuthenticationEnabled && *snmpPrivateEnabled {
-		return nil, logger, fmt.Errorf("SNMP private encryption requires authentication enabled.")
+		return nil, logger, fmt.Errorf("SNMP private encryption requires authentication enabled. ")
 	}
 
 	if *snmpAuthenticationEnabled {

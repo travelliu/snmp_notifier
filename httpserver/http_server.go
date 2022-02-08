@@ -81,6 +81,8 @@ func (httpServer HTTPServer) Configure() *http.Server {
 
 		data := types.AlertsData{}
 		err := json.NewDecoder(req.Body).Decode(&data)
+		b, _ := json.Marshal(data)
+		level.Debug(httpServer.logger).Log("msg", "alter data", "data	", string(b))
 		if err != nil {
 			httpServer.errorHandler(w, http.StatusUnprocessableEntity, err, &data)
 			return

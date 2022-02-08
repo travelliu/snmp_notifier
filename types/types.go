@@ -23,6 +23,7 @@ type AlertGroup struct {
 	OID      string
 	GroupID  string
 	Severity string
+	Instance string // alert Instance ip
 	Alerts   []Alert
 }
 

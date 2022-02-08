@@ -116,6 +116,9 @@ func (trapSender TrapSender) generateVarBinds(alertGroup types.AlertGroup) (snmp
 	varBinds = addStringSubOid(varBinds, alertGroup.OID, "1", trapUniqueID)
 	varBinds = addStringSubOid(varBinds, alertGroup.OID, "2", alertGroup.Severity)
 	varBinds = addStringSubOid(varBinds, alertGroup.OID, "3", *description)
+	if alertGroup.Instance != "" {
+		varBinds = addStringSubOid(varBinds, alertGroup.OID, "4", alertGroup.Instance)
+	}
 	for subOid, template := range trapSender.configuration.ExtraFieldTemplates {
 		value, err := commons.FillTemplate(alertGroup, template)
 		if err != nil {

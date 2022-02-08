@@ -45,16 +45,25 @@ func (alertParser AlertParser) Parse(alertsData types.AlertsData) (*types.AlertB
 	var (
 		alertGroups = map[string]*types.AlertGroup{}
 		groupID     string
+		instance    string
 	)
 	groupID = generateGroupID(alertsData)
+	instance = generateInstance(alertsData)
 	for _, alert := range alertsData.Alerts {
 		oid, err := alertParser.getAlertOID(alert)
 		if err != nil {
 			return nil, err
 		}
+
 		key := strings.Join([]string{*oid, "[", groupID, "]"}, "")
 		if _, found := alertGroups[key]; !found {
-			alertGroups[key] = &types.AlertGroup{OID: *oid, GroupID: groupID, Severity: alertParser.getLowestSeverity(), Alerts: []types.Alert{}}
+			alertGroups[key] = &types.AlertGroup{
+				OID:      *oid,
+				GroupID:  groupID,
+				Severity: alertParser.getLowestSeverity(),
+				Alerts:   []types.Alert{},
+				Instance: instance,
+			}
 		}
 		if alert.Status == "firing" {
 			err = alertParser.addAlertToGroup(alertGroups[key], alert)
@@ -113,4 +122,12 @@ func generateGroupID(alertsData types.AlertsData) string {
 		pairs = append(pairs, fmt.Sprintf("%s=%s", pair.Name, pair.Value))
 	}
 	return strings.Join(pairs, ",")
+}
+func generateInstance(alertsData types.AlertsData) string {
+	for _, pair := range alertsData.GroupLabels.SortedPairs() {
+		if strings.EqualFold(pair.Name, "instance") {
+			return pair.Value
+		}
+	}
+	return ""
 }
