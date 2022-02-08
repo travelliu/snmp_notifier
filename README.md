@@ -112,8 +112,8 @@ Flags:
                                  Trap OID to send if none is found in the alert labels.
       --snmp.trap-description-template=description-template.tpl
                                  SNMP description template.
-      --snmp.extra-field-template=4=extra-field-template.tpl ...
-                                 SNMP extra field templates, eg. --snmp.extra-field-templates=4=new-field.template.tpl will add the 4th field to the trap, with the given template file. You may add several fields using this flag several times.
+      --snmp.extra-field-template=11=extra-field-template.tpl ...
+                                 SNMP extra field templates, eg. --snmp.extra-field-templates=11=new-field.template.tpl will add the 11th field to the trap, with the given template file. You may add several fields using this flag several times.
       --snmp.community="public"  SNMP community (V2c only). Passing secrets to the command line is not recommended, consider using the SNMP_NOTIFIER_COMMUNITY environment variable instead.
       --snmp.authentication-enabled
                                  Enable SNMP authentication (V3 only).
@@ -211,7 +211,7 @@ Status: warning
 
 You may add additional fields thanks to the `--snmp.extra-field-template` arguments.
 
-For instance, the template `{{ len .Alerts }} alerts are firing.` given in the `--snmp.extra-field-template=4=alert-count.tpl` argument will produce:
+For instance, the template `{{ len .Alerts }} alerts are firing.` given in the `--snmp.extra-field-template=11=alert-count.tpl` argument will produce:
 
 ```console
 $ snmptrapd -m ALL -m +SNMP-NOTIFIER-MIB -f -Of -Lo -c scripts/snmptrapd.conf
@@ -238,7 +238,7 @@ Status: warning
 - Alert: TestAlert
   Summary: This is the random summary
   Description: This is the description of alert 1"
-.iso.org.dod.internet.private.enterprises.98789.0.1.4 = STRING: "2 alerts are firing."
+.iso.org.dod.internet.private.enterprises.98789.0.1.11 = STRING: "2 alerts are firing."
 --------------
 ```
 
