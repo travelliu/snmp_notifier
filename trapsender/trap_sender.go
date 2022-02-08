@@ -24,7 +24,7 @@ import (
 	"text/template"
 
 	"github.com/k-sone/snmpgo"
-	"github.com/shirou/gopsutil/host"
+	"github.com/shirou/gopsutil/v3/host"
 )
 
 // TrapSender sends traps according to given alerts

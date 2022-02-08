@@ -17,6 +17,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/prometheus/common/promlog"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -210,6 +211,7 @@ func TestPostAlerts(t *testing.T) {
 }
 
 func launchHTTPServer(t *testing.T, test Test) *http.Server {
+	logger := promlog.New(&promlog.Config{})
 	snmpDestination := fmt.Sprintf("127.0.0.1:%d", test.SNMPConnectionPort)
 
 	alertParserConfiguration := alertparser.Configuration{test.DefaultOID, test.OIDLabel, test.DefaultSeverity, test.Severities, test.SeverityLabel}
@@ -242,7 +244,7 @@ func launchHTTPServer(t *testing.T, test Test) *http.Server {
 	trapSender := trapsender.New(trapSenderConfiguration)
 
 	httpServerConfiguration := Configuration{":9465"}
-	httpServer := New(httpServerConfiguration, alertParser, trapSender).Configure()
+	httpServer := New(httpServerConfiguration, alertParser, trapSender, logger).Configure()
 	go func() {
 		httpServer.ListenAndServe()
 	}()
