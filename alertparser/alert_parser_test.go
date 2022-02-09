@@ -16,6 +16,7 @@ package alertparser
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/prometheus/alertmanager/template"
 	"io/ioutil"
 	"strings"
 	"testing"
@@ -113,5 +114,68 @@ func TestParse(t *testing.T) {
 				t.Error(diff)
 			}
 		}
+	}
+}
+
+func Test_generateInstance(t *testing.T) {
+	type args struct {
+		alertsData types.AlertsData
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "server_192.168.1.1:2456",
+			args: args{
+				alertsData: types.AlertsData{
+					GroupLabels: template.KV{
+						"server":   "192.168.1.1:2456",
+						"instance": "192.168.1.2",
+					},
+				},
+			},
+			want: "192.168.1.1",
+		},
+		{
+			name: "server_192.168.1.1",
+			args: args{
+				alertsData: types.AlertsData{
+					GroupLabels: template.KV{
+						"server":   "192.168.1.1",
+						"instance": "192.168.1.2",
+					},
+				},
+			},
+			want: "192.168.1.1",
+		},
+		{
+			name: "instance_192.168.1.2",
+			args: args{
+				alertsData: types.AlertsData{
+					GroupLabels: template.KV{
+						"instance": "192.168.1.2",
+					},
+				},
+			},
+			want: "192.168.1.2",
+		},
+		{
+			name: "no_instance",
+			args: args{
+				alertsData: types.AlertsData{
+					GroupLabels: template.KV{},
+				},
+			},
+			want: "",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := generateInstance(tt.args.alertsData); got != tt.want {
+				t.Errorf("generateInstance() = %v, want %v", got, tt.want)
+			}
+		})
 	}
 }

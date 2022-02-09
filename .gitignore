@@ -31,3 +31,5 @@ dependencies-stamp
 .deps
 *.tar.gz
 on
+
+dist/

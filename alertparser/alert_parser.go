@@ -124,10 +124,18 @@ func generateGroupID(alertsData types.AlertsData) string {
 	return strings.Join(pairs, ",")
 }
 func generateInstance(alertsData types.AlertsData) string {
-	for _, pair := range alertsData.GroupLabels.SortedPairs() {
-		if strings.EqualFold(pair.Name, "instance") {
-			return pair.Value
+	server, ok := alertsData.GroupLabels["server"]
+	if ok {
+		i := strings.Index(server, ":")
+		if i > 0 {
+			return server[:i]
 		}
+
+		return server
+	}
+	instance, ok := alertsData.GroupLabels["instance"]
+	if ok {
+		return instance
 	}
 	return ""
 }
