@@ -162,6 +162,30 @@ func Test_generateInstance(t *testing.T) {
 			want: "192.168.1.2",
 		},
 		{
+			name: "server_localhost",
+			args: args{
+				alertsData: types.AlertsData{
+					GroupLabels: template.KV{
+						"server":   "localhost:5432",
+						"instance": "192.168.1.2",
+					},
+				},
+			},
+			want: "192.168.1.2",
+		},
+		{
+			name: "server_127.0.0.1",
+			args: args{
+				alertsData: types.AlertsData{
+					GroupLabels: template.KV{
+						"server":   "127.0.0.1:5432",
+						"instance": "192.168.1.2",
+					},
+				},
+			},
+			want: "192.168.1.2",
+		},
+		{
 			name: "no_instance",
 			args: args{
 				alertsData: types.AlertsData{

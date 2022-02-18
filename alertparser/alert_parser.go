@@ -128,10 +128,13 @@ func generateInstance(alertsData types.AlertsData) string {
 	if ok {
 		i := strings.Index(server, ":")
 		if i > 0 {
-			return server[:i]
+			server = server[:i]
+		}
+		if !strings.EqualFold(server, "localhost") &&
+			!strings.EqualFold(server, "127.0.0.1") {
+			return server
 		}
 
-		return server
 	}
 	instance, ok := alertsData.GroupLabels["instance"]
 	if ok {
